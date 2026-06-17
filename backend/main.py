@@ -5,6 +5,7 @@ from typing import List
 import json
 import os
 from google.cloud import vision
+from google.oauth2 import service_account
 from usda_client import (
     search_food,
     get_best_match,
@@ -17,9 +18,16 @@ from usda_client import (
 
 app = FastAPI()
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "credentials/google-vision.json"
+credentials_json = os.getenv("GOOGLE_CREDENTIALS_JSON")
 
-vision_client = vision.ImageAnnotatorClient()
+if credentials_json:
+    credentials_json = credentials_json.strip()
+    credentials_info = json.loads(credentials_json)
+    credentials = service_account.Credentials.from_service_account_info(credentials_info)
+    vision_client = vision.ImageAnnotatorClient(credentials=credentials)
+else:
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "credentials/google-vision.json"
+    vision_client = vision.ImageAnnotatorClient()
 
 app.add_middleware(
     CORSMiddleware,
