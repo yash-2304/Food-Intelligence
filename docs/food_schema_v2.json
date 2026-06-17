@@ -1,0 +1,28 @@
+{
+  "id": "",
+  "name": "",
+  "scientific_name": "",
+  "category": "",
+  "sub_category": "",
+
+  "aliases": [],
+
+  "serving": {
+    "amount": 100,
+    "unit": "g"
+  },
+
+  "nutrition": {
+    "calories": 0,
+    "protein": 0,
+    "fat": 0,
+    "carbs": 0,
+    "fiber": 0,
+    "sugar": 0
+  },
+
+  "source": {
+    "provider": "",
+    "provider_id": ""
+  }
+}

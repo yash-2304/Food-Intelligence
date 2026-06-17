@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+.env
+.DS_Store
+*.pyc
+.env.local 
+credentials/
+*.pem
+*.key
+google-vision.json
