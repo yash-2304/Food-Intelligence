@@ -727,7 +727,7 @@ nutritionScore = Math.max(0, nutritionScore);
                   autoPlay
                   playsInline
                   muted
-                  className="w-full max-h-96 rounded-2xl border object-cover scale-x-[-1]"
+                  className="w-full max-h-96 rounded-2xl border object-cover"
                 />
 
                 <div className="absolute inset-0 z-20 flex items-center justify-center">
