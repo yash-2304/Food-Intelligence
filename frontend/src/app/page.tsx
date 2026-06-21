@@ -92,7 +92,28 @@ export default function Home() {
   const [imageLoading, setImageLoading] = useState(false);
   const [savedMeals, setSavedMeals] = useState<any[]>([]);
   const [toastMessage, setToastMessage] = useState("");
+
   const [cardWeights, setCardWeights] = useState<Record<number, number>>({});
+
+  const [gender, setGender] = useState("");
+  const [age, setAge] = useState(0);
+  const [heightCm, setHeightCm] = useState(0);
+  const [weightLbs, setWeightLbs] = useState<string>("");
+  const [activityLevel, setActivityLevel] = useState(1.375);
+
+  const weightKg = (Number(weightLbs) || 0) * 0.453592;
+  const bmi = heightCm > 0 ? weightKg / Math.pow(heightCm / 100, 2) : 0;
+
+  const bmr =
+    gender === "female"
+      ? 10 * weightKg + 6.25 * heightCm - 5 * age - 161
+      : 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
+
+  const maintenanceCalories = Math.max(0, Math.round(bmr * activityLevel));
+  const recommendedCalories = Math.max(0, maintenanceCalories - 500);
+  const recommendedProtein = Math.max(0, Math.round(weightLbs === "" ? 0 : Number(weightLbs) * 0.8));
+  const recommendedFat = Math.max(0, Math.round(recommendedCalories * 0.25 / 9));
+  const recommendedCarbs = Math.max(0, Math.round((recommendedCalories - (recommendedProtein * 4) - (recommendedFat * 9)) / 4));
 
 
   const [cameraActive, setCameraActive] = useState(false);
@@ -704,10 +725,146 @@ nutritionScore = Math.max(0, nutritionScore);
           </p>
 
           <div className="mt-6 rounded-[24px] border border-[#39FF14] bg-white p-6 shadow-[0_0_18px_rgba(57,255,20,0.18)] lg:p-7">
-            <h3 className="mb-2 text-3xl font-semibold tracking-[-0.04em]">Food Lens</h3>
-            <p className="mb-4 text-base leading-7 text-zinc-500">
-              Point your camera at food and instantly identify nutrition using AI vision and USDA data.
-            </p>
+            <details className="group" open={false}>
+              <summary className="flex cursor-pointer list-none items-center justify-between rounded-2xl border border-[#39FF14] bg-[#F8FFF6] px-5 py-4 font-semibold text-[#0F766E]">
+                <span>
+                  Personalized Nutrition Planning
+                </span>
+                <span className="text-sm text-zinc-500">
+                  Tap to create nutrition targets that will be applied to your meal tracking and progress goals
+                </span>
+              </summary>
+
+              <div className="mt-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-2xl font-semibold">Nutrition Planner</h3>
+                  <span className="rounded-full border px-3 py-1 text-sm">
+                    Personalized Goals
+                  </span>
+                </div>
+
+                <div className="mb-5 rounded-2xl border border-[#39FF14] bg-[#F8FFF6] p-4">
+                  <p className="text-sm font-semibold text-[#0F766E]">
+                    Personalized Nutrition Planning
+                  </p>
+
+                  <p className="mt-2 text-sm leading-6 text-zinc-600">
+                    Enter your age, gender, height, weight, and activity level. Food Intelligence uses your profile to estimate maintenance calories and generate recommended daily targets for calories, protein, carbohydrates, and fat.
+                  </p>
+
+                  <p className="mt-2 text-sm leading-6 text-zinc-600">
+                    After applying your targets, Food Intelligence will use them throughout your meal tracking experience. Daily Goals, progress rings, calorie tracking, and meal analysis will automatically reflect your personalized nutrition plan.
+                  </p>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-4">
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-zinc-600">
+                      Gender
+                    </label>
+                    <select
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                      className="w-full rounded-xl border p-3"
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-zinc-600">
+                      Age (years)
+                    </label>
+                    <input
+                      type="number"
+                      value={age === 0 ? "" : age}
+                      onChange={(e) => setAge(e.target.value === "" ? 0 : Number(e.target.value))}
+                      placeholder="25"
+                      className="w-full rounded-xl border p-3"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-zinc-600">
+                      Height (cm)
+                    </label>
+                    <input
+                      type="number"
+                      value={heightCm === 0 ? "" : heightCm}
+                      onChange={(e) => setHeightCm(e.target.value === "" ? 0 : Number(e.target.value))}
+                      placeholder="175 cm"
+                      className="w-full rounded-xl border p-3"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-zinc-600">
+                      Weight (lbs)
+                    </label>
+                    <input
+                      type="number"
+                      value={weightLbs}
+                      onChange={(e) => setWeightLbs(e.target.value)}
+                      placeholder="154 lbs"
+                      className="w-full rounded-xl border p-3"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-zinc-600">
+                      Activity Level
+                    </label>
+                    <select
+                      value={activityLevel}
+                      onChange={(e) => setActivityLevel(Number(e.target.value))}
+                      className="w-full rounded-xl border p-3"
+                    >
+                      <option value={1.2}>Sedentary</option>
+                      <option value={1.375}>Lightly Active</option>
+                      <option value={1.55}>Moderately Active</option>
+                      <option value={1.725}>Very Active</option>
+                      <option value={1.9}>Extremely Active</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="mt-5 grid gap-4 md:grid-cols-3">
+                  <div className="rounded-2xl border p-4">
+                    <p className="text-xs uppercase text-zinc-500">Estimated Maintenance Calories</p>
+                    <p className="mt-2 text-xl font-semibold">{maintenanceCalories} kcal</p>
+                  </div>
+                  <div className="rounded-2xl border p-4">
+                    <p className="text-xs uppercase text-zinc-500">Recommended Daily Calories</p>
+                    <p className="mt-2 text-xl font-semibold">{recommendedCalories} kcal</p>
+                  </div>
+                  <div className="rounded-2xl border p-4">
+                    <button
+                      onClick={() => {
+                        setCalorieGoal(recommendedCalories);
+                        setProteinGoal(recommendedProtein);
+                        setCarbsGoal(recommendedCarbs);
+                        setFatGoal(recommendedFat);
+                        setToastMessage('Applied recommended targets');
+                        setTimeout(() => setToastMessage(''), 2500);
+                      }}
+                      className="w-full rounded-xl bg-[#111111] px-4 py-3 text-white"
+                    >
+                      Apply Recommended Targets
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </details>
+            </div>
+         <div className="mt-6 rounded-[24px] border border-[#39FF14] bg-white p-6 shadow-[0_0_18px_rgba(57,255,20,0.18)] lg:p-7">
+  <h3 className="mb-2 text-3xl font-semibold tracking-[-0.04em]">
+    Food Lens
+  </h3>
+
+ <p className="mb-4 text-base leading-7 text-zinc-500">
+  Scan food with your camera, estimate portions, and analyze nutrition using Food Intelligence.
+</p>
 
             <div className="flex gap-3">
               <button
